@@ -1,0 +1,93 @@
+﻿@model RolesAllViewModel
+@{
+    this.ViewData["Title"] = "Roles";
+}
+
+<div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+    <!-- Page Heading -->
+    <div class="tm-bg-primary-dar tm-block-product-categories">
+    <h1 class="tm-block-title">Roles</h1>
+    <div class="row">
+        <div class="col-sm-2 col-md-2 col-lg-2 col-xl-2">
+            <h3 class="tm-block-title">List of roles</h3>
+        </div>
+        <div class="col-sm-6 col-md-6 col-lg-6 col-xl-6">
+            <ul class="tm-block-title" style="list-style-type:none;">
+                <li>
+                    <select id="ddlItemsPerPage" onchange="ddlItemsPerPage_OnChange()" style="border-radius: 1rem;">
+                        <option value="10" selected="@(Model.PaginationData.ItemsPerPage == 10)">10</option>
+                        <option value="50" selected="@(Model.PaginationData.ItemsPerPage == 50)">50</option>
+                        <option value="100" selected="@(Model.PaginationData.ItemsPerPage == 100)">100</option>
+                    </select>
+                </li>
+            </ul>
+        </div>
+        <div class="col-sm-3 col-md-3 col-lg-3 col-xl-3">
+        </div>
+        <div class="col-sm-1 col-md-1 col-lg-1 col-xl-1">
+             <a class="tm-product-delete-link" asp-controller="Roles" asp-action="Create">
+                <i class="fas fa-plus tm-product-delete-icon"></i>
+            </a>
+        </div>
+    </div>
+   
+    <div class="tm-product-table-container">
+        <table class="table tm-table-small tm-product-table">
+            <thead>
+                <tr>
+                <th scope="col">Name</th>
+                <th scope="col">Assing users</th>
+                <th scope="col">&nbsp;</th>
+                <th scope="col">&nbsp;</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var role in Model.Roles)
+                {
+                    <tr >
+                        <td class="tm-product-name">
+                            <a asp-controller="Roles" asp-action="Details" asp-route-id="@role.Id">
+                               <div class="tm-product-name">@role.Name</div>
+                            </a>
+                        </td>
+                        <td class="tm-product-name">@role.UserInRoleCount</td>
+                        <td class="text-center">
+                            <a class="tm-product-delete-link" asp-controller="Roles" asp-action="Edit" asp-route-id="@role.Id">
+                                <i class="fas fa-pen-alt tm-product-delete-icon"></i>
+                            </a>
+                        </td>
+                        <td class="text-center">
+                            <a class="tm-product-delete-link" asp-controller="Roles" asp-action="Delete" asp-route-id="@role.Id">
+                                <i class="fas fa-trash-alt tm-product-delete-icon"></i>
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <div class="centre">
+        <partial name="_ServerSidePaginationPartial" model="Model.PaginationData" />
+    </div>
+</div>
+</div>
+
+@section Scripts{
+    <script src="~/js/pagination.js"></script>
+    <script>
+		let url = "@Model.PaginationData.Url";
+		let numberOfPagesUrl = @Model.PaginationData.NumberOfPages;
+		let itemsPerPage = @Model.PaginationData.ItemsPerPage;
+		InitializePaginationList(url, numberOfPagesUrl, itemsPerPage)
+
+         function ddlItemsPerPage_OnChange() {
+            var e = document.getElementById("ddlItemsPerPage");
+            var itemsPerPage = e.options[e.selectedIndex].text;
+            var controller = "Roles";
+            var action = "Index";
+
+            var link = "/"+controller+"/"+action+"/?page="+ @GlobalConstants.DefaultPage+"&itemsPerPage="+ itemsPerPage;
+            window.location.href = link;
+        }
+    </script>
+}
